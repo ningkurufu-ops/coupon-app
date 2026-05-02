@@ -78,12 +78,14 @@
 </div>
 
 <script>
-let coupons = [
+const DEFAULT = [
   { name: "โค้ด A", pct: 40, max: 100, min: 100 },
   { name: "โค้ด B", pct: 35, max: 120, min: 100 },
   { name: "โค้ด C", pct: 30, max: 300, min: 100 },
   { name: "โค้ด D", pct: 25, max: 140, min: 100 },
 ];
+let saved = localStorage.getItem('coupons');
+let coupons = saved ? JSON.parse(saved) : DEFAULT;
 
 function calc() {
   const price = parseFloat(document.getElementById('priceInput').value) || 0;
@@ -130,9 +132,10 @@ function renderRows() {
   `).join('');
 }
 
-function update(i, key, val) { coupons[i][key] = val; calc(); }
-function addCoupon() { coupons.push({ name: "โค้ดใหม่", pct: 20, max: 100, min: 100 }); renderRows(); calc(); }
-function removeCoupon(i) { coupons.splice(i, 1); renderRows(); calc(); }
+function save() { localStorage.setItem('coupons', JSON.stringify(coupons)); }
+function update(i, key, val) { coupons[i][key] = val; save(); calc(); }
+function addCoupon() { coupons.push({ name: "โค้ดใหม่", pct: 20, max: 100, min: 100 }); save(); renderRows(); calc(); }
+function removeCoupon(i) { coupons.splice(i, 1); save(); renderRows(); calc(); }
 
 let editOpen = false;
 function toggleEdit() {
